@@ -1,75 +1,84 @@
 # System Architecture
 
-## 1. Overview
+## 1. Architecture Overview
 
-The AI Business Operations Copilot follows a layered
-architecture consisting of a presentation layer, API layer,
-AI orchestration layer, tool integration layer, and data layer.
+The AI Business Operations Copilot follows a layered architecture.
 
-## 2. Frontend
+The major layers are:
 
-React and Tailwind CSS will provide the user interface.
+1. Presentation Layer
+2. API Layer
+3. Agent Orchestration Layer
+4. AI/LLM Layer
+5. Retrieval Layer
+6. Tool Integration Layer
+7. Data Layer
+8. Observability Layer
 
-Responsibilities:
+The architecture is designed to keep AI reasoning separate from
+security-sensitive business operations.
 
-- User authentication
-- Chat interface
-- Streaming responses
-- Approval requests
-- Conversation history
+---
 
-## 3. Backend
+## 2. High-Level Architecture
 
-FastAPI will provide the backend API.
+```text
+                         ┌─────────────────────┐
+                         │       Employee      │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │    React Frontend   │
+                         │    + Tailwind CSS   │
+                         └──────────┬──────────┘
+                                    │
+                              HTTP / SSE
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │       FastAPI       │
+                         │      Backend        │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │      LangGraph      │
+                         │   Agent Workflow    │
+                         └──────┬──────┬───────┘
+                                │      │
+                     ┌──────────┘      └───────────┐
+                     ▼                             ▼
+              ┌──────────────┐              ┌──────────────┐
+              │    Ollama    │              │     RAG      │
+              │              │              │              │
+              │ Llama Model  │              │  Embeddings  │
+              └──────────────┘              └──────┬───────┘
+                                                   │
+                                                   ▼
+                                            ┌──────────────┐
+                                            │  PostgreSQL  │
+                                            │  + pgvector  │
+                                            └──────────────┘
 
-Responsibilities:
+                         Tool Integration Layer
+                                  │
+                ┌─────────────────┼─────────────────┐
+                ▼                 ▼                 ▼
+        Google Calendar        Gmail         Google Sheets
 
-- Authentication
-- Request validation
-- Conversation management
-- Agent invocation
-- Tool authorization
-- Approval workflows
-- API error handling
 
-## 4. AI Orchestration
+                         Supporting Services
+                                  │
+                    ┌─────────────┴─────────────┐
+                    ▼                           ▼
+                  Redis                    Langfuse
+                 Caching                  Observability
 
-LangGraph will manage the agent workflow.
 
-Responsibilities:
 
-- Agent state
-- Planning
-- Tool selection
-- Tool execution
-- Conditional workflows
-- Human approval
 
-## 5. LLM
+ 
 
-Ollama will provide local model inference.
 
-The initial model will be Llama.
 
-## 6. RAG
-
-Company documents will be processed into chunks,
-converted into embeddings, and stored in PostgreSQL
-using pgvector.
-
-## 7. Database
-
-PostgreSQL will store persistent application data.
-
-## 8. Cache
-
-Redis will be used for temporary state, caching,
-and asynchronous workloads.
-
-## 9. External Integrations
-
-The system will integrate with:
-
-- Google Calendar
-- Gmail
-- Google Sheets

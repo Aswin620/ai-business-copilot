@@ -1,15 +1,32 @@
-POST /api/v1/auth/login
+# API Design
 
-POST /api/v1/chat
+## 1. API Overview
 
-GET /api/v1/conversations
+The backend API will be implemented using FastAPI.
 
-GET /api/v1/conversations/{conversation_id}
+The API will follow REST-oriented conventions and use JSON
+for request and response payloads unless a different protocol
+is required.
 
-POST /api/v1/documents
+The API base path will be:
 
-GET /api/v1/approvals
+    /api/v1
 
-POST /api/v1/approvals/{approval_id}/approve
+Versioning the API allows future versions to be introduced
+without immediately breaking existing clients.
 
-POST /api/v1/approvals/{approval_id}/reject
+---
+
+## 2. Authentication
+
+### POST /api/v1/auth/login
+
+Authenticates a user.
+
+Request:
+
+```json
+{
+  "email": "employee@example.com",
+  "password": "password"
+}
