@@ -5,6 +5,9 @@ from app.api.routes.health import router as health_router
 from app.config import settings
 from app.api.routes.database import router as database_router
 from app.api.routes.chat import router as chat_router
+from app.api.routes import health
+from app.api.routes import conversations
+from fastapi import Request
 
 
 app = FastAPI(
@@ -44,3 +47,23 @@ app.include_router(
     prefix="/api/v1",
     tags=["Chat"],
 )
+
+
+
+app.include_router(health.router)   
+app.include_router(conversations.router)
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    print(
+        f"{request.method} {request.url.path}"
+    )
+
+    response = await call_next(request)
+
+    print(
+        f"{request.method} {request.url.path} "
+        f"-> {response.status_code}"
+    )
+
+    return response
