@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import DateTime, ForeignKey, String, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
 
@@ -27,6 +27,23 @@ class Conversation(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
+        server_default=func.now(),
         nullable=False,
     )
+
+    user = relationship(
+        "User",
+        back_populates="conversations",
+    )
+
+    messages = relationship(
+        "Message",
+        back_populates="conversation",
+        cascade="all, delete-orphan",
+    )
+    
+    tool_calls = relationship(
+    "ToolCall",
+    back_populates="conversation",
+    cascade="all, delete-orphan",
+  )

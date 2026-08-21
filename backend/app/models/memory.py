@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, String, Text, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
 
@@ -31,15 +31,20 @@ class Memory(Base):
         default="general",
     )
 
-created_at: Mapped[datetime] = mapped_column(
-    DateTime,
-    server_default=func.now(),
-    nullable=False,
-)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        server_default=func.now(),
+        nullable=False,
+    )
 
-updated_at: Mapped[datetime] = mapped_column(
-    DateTime,
-    server_default=func.now(),
-    onupdate=func.now(),
-    nullable=False,
-)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
+    )
+
+    user = relationship(
+        "User",
+        back_populates="memories",
+    )

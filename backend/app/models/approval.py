@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, String, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
 
@@ -36,8 +36,19 @@ class Approval(Base):
         nullable=True,
     )
 
-created_at: Mapped[datetime] = mapped_column(
-    DateTime,
-    server_default=func.now(),
-    nullable=False,
-)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        server_default=func.now(),
+        nullable=False,
+    )
+
+    approved_by_user = relationship(
+        "User",
+        back_populates="approvals",
+        foreign_keys=[approved_by],
+    )
+
+    tool_call = relationship(
+        "ToolCall",
+        back_populates="approvals",
+    )
