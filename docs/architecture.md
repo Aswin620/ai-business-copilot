@@ -75,7 +75,30 @@ security-sensitive business operations.
                   Redis                    Langfuse
                  Caching                  Observability
 
+## Local LLM Inference
 
+The project uses Ollama as the local model runtime.
+
+The current inference flow is:
+
+React
+  ↓
+FastAPI
+  ↓
+Ollama
+  ↓
+Llama 3.1 8B
+
+Ollama exposes a local HTTP API that allows the backend
+to send prompts to the locally running Llama model.
+
+Important inference parameters include:
+
+- temperature
+- top-p
+- context
+- streaming
+- model selection
 
 
  
