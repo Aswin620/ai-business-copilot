@@ -277,3 +277,78 @@ Tool Result
 LLM
   ↓
 User
+
+
+## Structured Output and Validation
+
+The AI Business Operations Copilot converts natural-language
+requests into structured data before business operations are
+performed.
+
+The processing flow is:
+
+User Request
+    ↓
+LLM
+    ↓
+Structured JSON
+    ↓
+Pydantic Validation
+    ↓
+Validated Python Object
+    ↓
+Business Logic
+
+
+### Schedule Meeting Schema
+
+A meeting request contains:
+
+- attendees
+- date
+- time
+- duration
+- title
+
+Example:
+
+{
+  "attendees": ["John"],
+  "date": "tomorrow",
+  "time": "3 PM",
+  "duration": 30,
+  "title": "Project discussion"
+}
+
+
+### Validation
+
+LLM output must not be trusted blindly.
+
+Pydantic models are used as application-level data
+contracts to validate the structure and types of LLM output.
+
+If required information is missing or the output does not
+match the expected schema, the application should not execute
+the business operation.
+
+Instead, it should handle the validation failure or request
+additional information from the user.
+
+
+### Future Tool Calling
+
+Validated structured data will eventually be passed to
+business tools.
+
+Example:
+
+User
+ ↓
+LLM
+ ↓
+ScheduleMeetingRequest
+ ↓
+Pydantic Validation
+ ↓
+schedule_meeting Tool
